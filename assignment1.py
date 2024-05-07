@@ -2,11 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# # Given data
-# data = {
-#     "X": [-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0],
-#     "Y": [7.0, 2.0, 0.0, 0.0, 0.0, 2.0, 7.0]
-# }
 x = (-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0)
 y = (7.0, 2.0, 0.0, 0.0, 0.0, 2.0, 7.0)
 
