@@ -22,6 +22,20 @@ def predictValues(betaValues: np.ndarray, xValues: np.ndarray) -> np.ndarray:
         predictions += betaValues[i] * (xValues ** i)
     return predictions
 
+# Function to compute Lagrange interpolation polynomial
+def lagrangeInterpolation(x_values: List[float], y_values: List[float], x: float) -> float:
+    n = len(x_values)
+    result = 0.0
+    for i in range(n):
+        term = y_values[i]
+
+        for j in range(n):
+            if j != i:
+                term = term * ((x - x_values[j]) / (x_values[i] - x_values[j]))
+        result += term
+    
+    return result
+
 # Function to compute bias and variance
 def computeMSE(predictions: np.ndarray, actualY: np.ndarray) -> Tuple[float, float]:
     mse = np.mean((predictions - actualY) ** 2)
@@ -31,24 +45,51 @@ def computeMSE(predictions: np.ndarray, actualY: np.ndarray) -> Tuple[float, flo
 def createFeatureMatrix(xValues: np.ndarray, degree: int) -> np.ndarray:
     return np.column_stack([xValues ** i for i in range(degree + 1)])
 
-# Function to plot function curves for all degrees
 def plotFunctionCurves(trainX: np.ndarray, trainY: np.ndarray, xRange: np.ndarray, yActual: np.ndarray, betaValuesForDegrees: List[Tuple[int, np.ndarray]]) -> None:
     plt.figure(figsize=(10, 6))
-    
-    # # Plot actual function
-    plt.plot(xRange, yActual, label='Actual Function', color='black', linewidth=2)
     
     # Plot training data points
     plt.scatter(trainX, trainY, label='Training Data', color='grey', alpha=0.6)
     
+    # Define a distinct color palette for each degree polynomial
+    # Here we use contrasting colors
+    color_palette = ['blue', 'orange', 'purple', 'red']
+
     # Plot polynomial approximations for each degree
-    for degree, betaValues in betaValuesForDegrees:
+    for i, (degree, betaValues) in enumerate(betaValuesForDegrees):
         predictions = predictValues(betaValues, xRange)
-        plt.plot(xRange, predictions, label=f'Degree {degree} Polynomial', linewidth=2)
+        # Use a color from the defined palette, cycling back to the start if necessary
+        plt.plot(xRange, predictions, label=f'Degree {degree} Polynomial', color=color_palette[i % len(color_palette)], linewidth=2)
+        
+    # Calculate Lagrange interpolation values for each point in xRange
+    lagrangeY = [lagrangeInterpolation(xRange, yActual, x) for x in xRange]
+    plt.plot(xRange, lagrangeY, label='Lagrange Function', color='green', linestyle='--', linewidth=2)
     
+    plt.xlabel('x = linear-scale\nObserve closest matching function')
+    plt.ylabel('y = linear-scale')
+    plt.title('Function Curves for Degrees 1,2,3,4 & Lagrange')
+    plt.legend()
+    plt.show()
+
+# Function to plot Lagrange interpolation curve
+def plotLagrangeCurve(trainX: np.ndarray, trainY: np.ndarray, xRange: np.ndarray, yActual: np.ndarray) -> None:
+    plt.figure(figsize=(10, 6))
+
+    # Calculate Lagrange interpolation values for each point in xRange
+    lagrangeY = [lagrangeInterpolation(xRange, yActual, x) for x in xRange]
+    print(f"lagrangeY={lagrangeY}")
+    # Plot actual function
+    plt.plot(xRange, yActual, label='Actual Function', color='black', linewidth=2)
+
+    # Plot Lagrange interpolation curve
+    plt.plot(xRange, lagrangeY, label='Lagrange Interpolation', color='green', linewidth=2)
+
+    # Plot training data points
+    # plt.scatter(trainX, trainY, label='Training Data', color='gray', alpha=0.6)
+
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title('Function Curves for All Degrees')
+    plt.title('Lagrange Interpolation Curve')
     plt.legend()
     plt.show()
 
@@ -68,7 +109,7 @@ def plotBiasVariance(biasVarianceResults: List[Dict[str, float]]) -> None:
 
     # Add labels and title
     plt.xlabel('Degree of Polynomial (Complexity)')
-    plt.ylabel('Error')
+    plt.ylabel('Mean Squared Error')
     plt.title('Training and Testing Error across Different Degrees')
 
     # Add legend
@@ -123,9 +164,24 @@ def main() -> None:
             'testVariance': testVariance
         })
 
+# Calculate Lagrange interpolation values for training and testing data
+    # lagrangeTrainY = [lagrangeInterpolation(trainX, trainY, x) for x in trainX]
+    # lagrangeTestY = [lagrangeInterpolation(testX, trainY, x) for x in testX]
+
+    # # Compute MSE for Lagrange interpolation on training and testing data
+    # lagrangeTrainMSE = computeMSE(lagrangeTrainY, trainY)
+    # lagrangeTestMSE = computeMSE(lagrangeTestY, testY)
+
+    # # Append Lagrange results to biasVarianceResults list
+    # biasVarianceResults.append({
+    #     'degree': 'Lagrange',
+    #     'trainBias': lagrangeTrainMSE,
+    #     'testVariance': lagrangeTestMSE
+    # })
+
     # Plot function curves for all degrees
     plotFunctionCurves(trainX, trainY, xRange, yActual, betaValuesForDegrees)
-
+    
     # Plot bias and variance across all degrees
     plotBiasVariance(biasVarianceResults)
 
