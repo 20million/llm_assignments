@@ -4,11 +4,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from typing import Callable, Dict, List, Tuple
 
-# Function to generate the dataset
-def generateData(func: Callable[[np.ndarray], Dict[float, float]], start: float, stop: float, numDataPoints: int) -> Dict[float, float]:
-    x = np.linspace(start, stop, numDataPoints)
-    return func(x)
-
 # Function to generate target values with noise
 def yGenerator(x: np.ndarray) -> Dict[float, float]:
     return {xi: (2 * (xi ** 4)) - (3 * (xi ** 3)) + (7 * (xi ** 2)) - (23 * xi) + 8 + np.random.normal(0, 3) for xi in x}
@@ -40,11 +35,11 @@ def createFeatureMatrix(xValues: np.ndarray, degree: int) -> np.ndarray:
 def plotFunctionCurves(trainX: np.ndarray, trainY: np.ndarray, xRange: np.ndarray, yActual: np.ndarray, betaValuesForDegrees: List[Tuple[int, np.ndarray]]) -> None:
     plt.figure(figsize=(10, 6))
     
-    # Plot actual function
+    # # Plot actual function
     plt.plot(xRange, yActual, label='Actual Function', color='black', linewidth=2)
     
     # Plot training data points
-    plt.scatter(trainX, trainY, label='Training Data', color='gray', alpha=0.6)
+    plt.scatter(trainX, trainY, label='Training Data', color='grey', alpha=0.6)
     
     # Plot polynomial approximations for each degree
     for degree, betaValues in betaValuesForDegrees:
@@ -82,8 +77,9 @@ def plotBiasVariance(biasVarianceResults: List[Dict[str, float]]) -> None:
 
 # Main function
 def main() -> None:
+    xRange = np.linspace(-5, 5, 100)
     # Generate dataset
-    dataset = generateData(yGenerator, -5, 5, 101)
+    dataset = yGenerator(xRange)
     df = pd.DataFrame(dataset.items(), columns=['x', 'y'])
 
     # Split the dataset into training and test data
@@ -99,7 +95,6 @@ def main() -> None:
     betaValuesForDegrees = []
 
     # Define the range for plotting
-    xRange = np.linspace(-5, 5, 100)
     yActual = (2 * (xRange ** 4)) - (3 * (xRange ** 3)) + (7 * (xRange ** 2)) - (23 * xRange) + 8
 
     # Calculate bias and variance for each degree and collect beta values
