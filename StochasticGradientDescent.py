@@ -10,15 +10,18 @@ class SampleRange(NamedTuple):
     count: int
 
 def generateNoise(mean: float, sigma: float) -> float:
+    """Generate random noise."""
     return np.random.normal(mean, sigma)
 
 def generateData(xRange: SampleRange, noiseMean: float, noiseSigma: float) -> Tuple[np.ndarray, np.ndarray]:
+    """Generate synthetic data."""
     xValues = np.linspace(xRange.start, xRange.stop, xRange.count)
     noise = generateNoise(noiseMean, noiseSigma)
     yValues = (2 * xValues) - 3 + noise
     return xValues, yValues
 
 def findBetaClosedForm(xMatrix: np.array, yActual: np.array) -> np.array:
+    """Find beta coefficients using closed-form solution."""
     xMatrix = np.array(xMatrix)
     xTranspose = xMatrix.transpose()
     firstPart = np.linalg.inv(np.matmul(xTranspose, xMatrix))
@@ -26,28 +29,31 @@ def findBetaClosedForm(xMatrix: np.array, yActual: np.array) -> np.array:
     return np.matmul(firstPart, secondPart)
 
 def findError(xActual: np.array, yActual: np.array, beta0: float, beta1: float) -> float:
+    """Calculate mean squared error."""
     predValues = (xActual * beta1) + beta0
     return np.mean((yActual - predValues) ** 2)
 
-
 def findBetas(xActual: np.array, yActual: np.array, beta0: float, beta1: float) -> float:
+    """Calculate gradients for beta0 and beta1."""
     predValues = (beta1 * xActual) + beta0
     gradBeta0 = -2 * np.mean(yActual - predValues)
     gradBeta1 = -2 * np.mean(xActual * (yActual - predValues))
     return gradBeta0, gradBeta1
 
-
 def findBetaGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array, yTest: np.array, eta: float, maxIterations: int = 10000, tol: float = 1e-6) -> Tuple[float, float, np.array, np.array, np.array]:
+    """Perform stochastic gradient descent to find optimal beta coefficients."""
     steps = []
     bias = []
     variance = []
     
+    # Initialize beta coefficients
     beta0, beta1 = np.random.normal(loc=0, scale=1, size=2)
     randomIndices = np.random.choice(len(xTrain), size=len(xTrain), replace=True)
 
     step = 0
     previous_error = float('inf')
 
+    # Iterating until convergence or maximum iterations
     for i in randomIndices:
         betas = findBetas(xTrain[i], yTrain[i], beta0, beta1)
         beta0 -= eta * betas[0]
@@ -67,7 +73,8 @@ def findBetaGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array,
             print(f"Terminating: Change in error ({abs(previous_error - current_error)}) is below tolerance ({tol}) for eta ({eta}) at step ({step})")
             break
 
-        previous_error = current_error        
+        previous_error = current_error
+
     # skip 5x, 5y
     plt.plot(steps[5:], bias[5:], label=f"Bias at eta: {eta}")
     plt.plot(steps[5:], variance[5:], label=f"Variance at eta: {eta}")
@@ -75,6 +82,7 @@ def findBetaGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array,
     return beta0, beta1, np.array(bias), np.array(variance), eta, np.array(steps)
 
 def plotEpochsErrorGraph(convergenceEpochs: Tuple[int]) -> None:
+    """Plot error rates during training."""
     plt.xlabel("Epochs (linear scale)")
     plt.ylabel("Epsilon (linear scale)")
     plt.title("Error Rate During Training using Stochastic Gradient Descent")
