@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from typing import NamedTuple, Tuple, List, Optional
+from sklearn.model_selection import train_test_split
 
 # Define a NamedTuple for a range of values
 class SampleRange(NamedTuple):
@@ -39,7 +41,7 @@ def calculateError(x: np.ndarray, y: np.ndarray, beta0: float, beta1: float) -> 
     """Calculates the sum of squared errors."""
     predictions = beta0 + beta1 * x
     errors = y - predictions
-    return np.sum(errors ** 2)
+    return np.mean(errors ** 2)
 
 # Function to calculate the gradients for beta0 and beta1
 def calculateGradients(x: np.ndarray, y: np.ndarray, beta0: float, beta1: float) -> Tuple[float, float]:
@@ -64,8 +66,6 @@ def findBetaGradientDescent(x: np.ndarray, y: np.ndarray, learningRate: float, m
     beta0, beta1 = np.random.normal(0, 1), np.random.normal(0, 1)
     previousError = calculateError(x, y, beta0, beta1)
     errors = [previousError]
-    beta0_values = [beta0]
-    beta1_values = [beta1]
 
     epochCount = 0
 
@@ -79,24 +79,9 @@ def findBetaGradientDescent(x: np.ndarray, y: np.ndarray, learningRate: float, m
                 print(f"Terminating: Error ({error:.6f}) is below 0.0001 at epoch=({epochCount}) and learningRate = ({learningRate}).")
             break
         errors.append(error)
-        beta0_values.append(beta0)
-        beta1_values.append(beta1)
         epochCount+=1
         
-    return beta0, beta1, errors, beta0_values, beta1_values
-
-# Plot the data, closed-form solution, and gradient descent solution
-def plotClosedFormSolution(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray) -> None:
-    """Plots the original data points and the closed-form solution."""
-    plt.figure(figsize=(8, 6))
-    plt.scatter(xValues, yValues, color='gray', label='Data', alpha=0.6)
-    yClosedForm = closedFormBetas[0] + closedFormBetas[1] * xValues
-    plt.plot(xValues, yClosedForm, color='red', label='Closed-Form Solution')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Closed-Form Solution')
-    plt.legend()
-    plt.show()
+    return beta0, beta1, errors
 
 # Plot the data and gradient descent solution
 def plotGradientDescentSolution(xValues: np.ndarray, yValues: np.ndarray, gradientDescentBetas: Tuple[float, float], learningRate: float) -> None:
@@ -111,35 +96,24 @@ def plotGradientDescentSolution(xValues: np.ndarray, yValues: np.ndarray, gradie
     plt.legend()
     plt.show()
 
-# Plot the data, closed-form solution, and gradient descent solution
-def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray, gradientDescentBetas: Tuple[float, float], errors: List[float], beta0_values: List[float], beta1_values: List[float], learningRate: float) -> None:
-    # Plot error over epochs for gradient descent
+# Plot the data, closed-form solution, and gradient descent solutions
+def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray, gradientDescentResults: List[Tuple[Tuple[float, float], List[float], float]], etas: List[float]) -> None:
     plt.figure(figsize=(10, 6))
-    iterations = range(len(errors))
-    plt.plot(iterations, errors, color='red')
-    plt.xlabel('Epoch')
-    plt.ylabel('Error')
-    plt.title(f"Error over Epochs for Gradient Descent for learningRate ({learningRate})")
-    plt.show()
+    plt.scatter(xValues, yValues, color='gray', label='Data', alpha=0.6)
 
-    # Plot beta0 and beta1 over epochs for gradient descent
-    plt.figure(figsize=(10, 8))
+    # Plot closed-form solution
+    yClosedForm = closedFormBetas[0] + closedFormBetas[1] * xValues
+    plt.plot(xValues, yClosedForm, color='red', label='Closed-Form Solution')
 
-    plt.subplot(2, 1, 1)
-    iterations = range(len(beta0_values))
-    plt.plot(iterations, beta0_values, color='blue')
-    plt.xlabel('Epoch')
-    plt.ylabel('Beta0')
-    plt.title(f"Beta0 over Epochs for Gradient Descent for learningRate ({learningRate})")
+    # Plot gradient descent solutions
+    for gradientDescentBetas, errors, learningRate in gradientDescentResults:
+        yGradientDescent = gradientDescentBetas[0] + gradientDescentBetas[1] * xValues
+        plt.plot(xValues, yGradientDescent, label=f'Gradient Descent (eta={learningRate})')
 
-    plt.subplot(2, 1, 2)
-    iterations = range(len(beta1_values))
-    plt.plot(iterations, beta1_values, color='green')
-    plt.xlabel('Epoch')
-    plt.ylabel('Beta1')
-    plt.title(f"Beta1 over Epochs for Gradient Descent for learningRate ({learningRate})")
-
-    plt.tight_layout()
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Comparison of Solutions')
+    plt.legend()
     plt.show()
 
 # Main function
@@ -148,29 +122,82 @@ def main():
     xRange = SampleRange(start=-5, stop=5, count=100)
     xValues, yValues = generateData(xRange, noiseMean=0, noiseSigma=5)
 
+    # Split data into training and test sets
+    x_train, x_test, y_train, y_test = train_test_split(xValues, yValues, test_size=0.2, random_state=42)
+
     # Calculate beta values using closed-form solution
-    closedFormBetas = calculateClosedFormBeta(xValues, yValues, degree=1)
+    closedFormBetas = calculateClosedFormBeta(x_train, y_train, degree=1)
     print(f"closedFormBetas: ({closedFormBetas}).")
 
-    # Plot the closed-form solution
-    plotClosedFormSolution(xValues, yValues, closedFormBetas)
-
     # Define a list of different learning rates
-    etas = [0.001, .01, .1]
+    etas = [0.001, 0.01, 0.1]
+
+    # Store results for each learning rate
+    gradientDescentResults = []
+
+    # Store training and testing errors for each learning rate
+    training_errors = []
+    testing_errors = []
+
+    # Store all errors across solutions
+    all_errors = []
 
     # Iterate over each learning rate
     for eta in etas:
         # Calculate beta values using gradient descent
-        gradientDescentResult = findBetaGradientDescent(xValues, yValues, learningRate=eta)
+        gradientDescentResult = findBetaGradientDescent(x_train, y_train, learningRate=eta)
 
         if gradientDescentResult:
-            gradientDescentBetas, errors, beta0_values, beta1_values = gradientDescentResult[0:2], gradientDescentResult[2], gradientDescentResult[3], gradientDescentResult[4]
-            print(f"gradientDescentBetas for eta={eta}: ({gradientDescentBetas}).")
-            # Plot the gradient descent solution
-            plotGradientDescentSolution(xValues, yValues, gradientDescentBetas, eta)
+            gradientDescentBetas, errors = gradientDescentResult[0:2], gradientDescentResult[2]
+            # Store the results
+            gradientDescentResults.append((gradientDescentBetas, errors, eta))
+            all_errors.append(errors)
+            
+            # Calculate training error (bias)
+            training_error = calculateError(x_train, y_train, gradientDescentBetas[0], gradientDescentBetas[1])
+            training_errors.append(training_error)
 
-            # Plot the data, closed-form solution, and gradient descent solution
-            plotSolutions(xValues, yValues, closedFormBetas, gradientDescentBetas, errors, beta0_values, beta1_values, eta)
+            # Calculate testing error (variance)
+            testing_error = calculateError(x_test, y_test, gradientDescentBetas[0], gradientDescentBetas[1])
+            testing_errors.append(testing_error)
+
+    # Plot all solutions together
+    plotSolutions(xValues, yValues, closedFormBetas, gradientDescentResults, etas)
+
+    # Plot all epoch/error across all solutions
+    plt.figure(figsize=(10, 6))
+    for errors, eta in zip(all_errors, etas):
+        iterations = range(len(errors))
+        plt.plot(iterations, errors, label=f'Learning Rate={eta}')
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Error')
+    plt.title('Error over Epochs for All Solutions')
+    plt.legend()
+    plt.xlim(5, 250)
+    plt.show()
+
+    # Plot training and testing errors for all learning rates
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(len(training_errors)), training_errors, label='Training Error (Bias)')
+    plt.plot(range(len(testing_errors)), testing_errors, label='Testing Error (Variance)')
+    plt.xlabel('Epoch')
+    plt.ylabel('Error')
+    plt.title('Training and Testing Errors for Different Learning Rates')
+    plt.legend()
+    plt.show()
+
+ # Create DataFrame
+    df_data = {
+        "Method": ["Closed-Form"] + [f"Gradient Descent (eta={result[2]})" for result in gradientDescentResults],
+        "Beta Values": [closedFormBetas] + [result[0] for result in gradientDescentResults],
+        "Error": [0.0] + [result[1][-1] for result in gradientDescentResults],
+        "Epochs": [np.nan] + [len(result[1]) for result in gradientDescentResults],
+        "Learning Rate": [np.nan] + [result[2] for result in gradientDescentResults]
+    }
+
+    df = pd.DataFrame(df_data)
+    print(df)
 
 # Run the main function when the script is executed directly
 if __name__ == "__main__":
