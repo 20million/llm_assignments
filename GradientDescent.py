@@ -67,18 +67,21 @@ def findBetaGradientDescent(x: np.ndarray, y: np.ndarray, learningRate: float, m
     beta0_values = [beta0]
     beta1_values = [beta1]
 
+    epochCount = 0
+
     for _ in range(maxIterations):
         beta0, beta1, error = performGradientDescentIteration(x, y, beta0, beta1, learningRate)
         error_difference = abs(errors[-1] - error)
         if error_difference < tol or error < 0.0001:
             if error_difference < tol:
-                print(f"Terminating: Change in error ({error_difference:.6f}) is below tolerance ({tol:.6f}).")
+                print(f"Terminating: Change in error ({error_difference:.6f}) is below tolerance ({tol:.6f}) at epoch=({epochCount}) and learningRate = ({learningRate}).")
             else:
-                print(f"Terminating: Error ({error:.6f}) is below 0.0001.")
+                print(f"Terminating: Error ({error:.6f}) is below 0.0001 at epoch=({epochCount}) and learningRate = ({learningRate}).")
             break
         errors.append(error)
         beta0_values.append(beta0)
         beta1_values.append(beta1)
+        epochCount+=1
         
     return beta0, beta1, errors, beta0_values, beta1_values
 
@@ -96,7 +99,7 @@ def plotClosedFormSolution(xValues: np.ndarray, yValues: np.ndarray, closedFormB
     plt.show()
 
 # Plot the data and gradient descent solution
-def plotGradientDescentSolution(xValues: np.ndarray, yValues: np.ndarray, gradientDescentBetas: Tuple[float, float]) -> None:
+def plotGradientDescentSolution(xValues: np.ndarray, yValues: np.ndarray, gradientDescentBetas: Tuple[float, float], learningRate: float) -> None:
     """Plots the original data points and the gradient descent solution."""
     plt.figure(figsize=(8, 6))
     plt.scatter(xValues, yValues, color='gray', label='Data', alpha=0.6)
@@ -104,19 +107,19 @@ def plotGradientDescentSolution(xValues: np.ndarray, yValues: np.ndarray, gradie
     plt.plot(xValues, yGradientDescent, color='blue', label='Gradient Descent Solution')
     plt.xlabel('X')
     plt.ylabel('Y')
-    plt.title('Gradient Descent Solution')
+    plt.title(f"Gradient Descent Solution for learningRate ({learningRate})")
     plt.legend()
     plt.show()
 
 # Plot the data, closed-form solution, and gradient descent solution
-def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray, gradientDescentBetas: Tuple[float, float], errors: List[float], beta0_values: List[float], beta1_values: List[float]) -> None:
+def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray, gradientDescentBetas: Tuple[float, float], errors: List[float], beta0_values: List[float], beta1_values: List[float], learningRate: float) -> None:
     # Plot error over epochs for gradient descent
     plt.figure(figsize=(10, 6))
     iterations = range(len(errors))
     plt.plot(iterations, errors, color='red')
     plt.xlabel('Epoch')
     plt.ylabel('Error')
-    plt.title('Error over Epochs for Gradient Descent')
+    plt.title(f"Error over Epochs for Gradient Descent for learningRate ({learningRate})")
     plt.show()
 
     # Plot beta0 and beta1 over epochs for gradient descent
@@ -127,14 +130,14 @@ def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.
     plt.plot(iterations, beta0_values, color='blue')
     plt.xlabel('Epoch')
     plt.ylabel('Beta0')
-    plt.title('Beta0 over Epochs for Gradient Descent')
+    plt.title(f"Beta0 over Epochs for Gradient Descent for learningRate ({learningRate})")
 
     plt.subplot(2, 1, 2)
     iterations = range(len(beta1_values))
     plt.plot(iterations, beta1_values, color='green')
     plt.xlabel('Epoch')
     plt.ylabel('Beta1')
-    plt.title('Beta1 over Epochs for Gradient Descent')
+    plt.title(f"Beta1 over Epochs for Gradient Descent for learningRate ({learningRate})")
 
     plt.tight_layout()
     plt.show()
@@ -147,19 +150,27 @@ def main():
 
     # Calculate beta values using closed-form solution
     closedFormBetas = calculateClosedFormBeta(xValues, yValues, degree=1)
+    print(f"closedFormBetas: ({closedFormBetas}).")
+
     # Plot the closed-form solution
     plotClosedFormSolution(xValues, yValues, closedFormBetas)
-    
-    # Calculate beta values using gradient descent
-    gradientDescentResult = findBetaGradientDescent(xValues, yValues, learningRate=0.001)
 
-    if gradientDescentResult:
-        gradientDescentBetas, errors, beta0_values, beta1_values = gradientDescentResult[0:2], gradientDescentResult[2], gradientDescentResult[3], gradientDescentResult[4]
-        # Plot the gradient descent solution
-        plotGradientDescentSolution(xValues, yValues, gradientDescentBetas)
+    # Define a list of different learning rates
+    etas = [0.001, .01, .1]
 
-        # Plot the data, closed-form solution, and gradient descent solution
-        plotSolutions(xValues, yValues, closedFormBetas, gradientDescentBetas, errors, beta0_values, beta1_values)
+    # Iterate over each learning rate
+    for eta in etas:
+        # Calculate beta values using gradient descent
+        gradientDescentResult = findBetaGradientDescent(xValues, yValues, learningRate=eta)
+
+        if gradientDescentResult:
+            gradientDescentBetas, errors, beta0_values, beta1_values = gradientDescentResult[0:2], gradientDescentResult[2], gradientDescentResult[3], gradientDescentResult[4]
+            print(f"gradientDescentBetas for eta={eta}: ({gradientDescentBetas}).")
+            # Plot the gradient descent solution
+            plotGradientDescentSolution(xValues, yValues, gradientDescentBetas, eta)
+
+            # Plot the data, closed-form solution, and gradient descent solution
+            plotSolutions(xValues, yValues, closedFormBetas, gradientDescentBetas, errors, beta0_values, beta1_values, eta)
 
 # Run the main function when the script is executed directly
 if __name__ == "__main__":
