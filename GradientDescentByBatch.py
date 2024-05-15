@@ -28,7 +28,7 @@ def plotEpochsErrorGraph(convergenceEpochs: List[int], biasList: List[np.array],
 
 def main():
     xRange = SampleRange(start=-5, stop=5, count=1000)
-    xActual, yActual = generateData(xRange, generateNoise(mean=0, sigma=5))
+    xActual, yActual = generateData(xRange, generateNoise(mean=0, sigma=5, size=xRange.count))
 
     xTrain, xTest, yTrain, yTest = train_test_split(xActual, yActual, test_size=0.2)
     

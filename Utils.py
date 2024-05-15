@@ -7,9 +7,10 @@ class SampleRange(NamedTuple):
     stop: float
     count: int
 
-def generateNoise(mean: float, sigma: float) -> float:
+def generateNoise(mean: float, sigma: float, size: int) -> np.ndarray:
     """Generate random noise."""
-    return np.random.normal(mean, sigma)
+    print(f"[generateNoise] [mean={mean}] [sigma={sigma}] [size={size}]")
+    return np.random.normal(mean, sigma, size)
 
 def generateData(xRange: SampleRange, noise: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data."""

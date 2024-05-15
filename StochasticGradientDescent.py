@@ -9,14 +9,14 @@ class SampleRange(NamedTuple):
     stop: float
     count: int
 
-def generateNoise(mean: float, sigma: float) -> float:
+def generateNoise(mean: float, sigma: float, size: int) -> float:
     """Generate random noise."""
-    return np.random.normal(mean, sigma)
+    return np.random.normal(mean, sigma, size)
 
 def generateData(xRange: SampleRange, noiseMean: float, noiseSigma: float) -> Tuple[np.ndarray, np.ndarray]:
     """Generate synthetic data."""
     xValues = np.linspace(xRange.start, xRange.stop, xRange.count)
-    noise = generateNoise(noiseMean, noiseSigma)
+    noise = generateNoise(noiseMean, noiseSigma, xRange.count)
     yValues = (2 * xValues) - 3 + noise
     return xValues, yValues
 
