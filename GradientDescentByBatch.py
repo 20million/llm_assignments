@@ -33,9 +33,9 @@ def main():
     xTrain, xTest, yTrain, yTest = train_test_split(xActual, yActual, test_size=0.2)
     
     # Gradient descent with different batch sizes
-    gdStochastic = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.01, batchSize=1)
-    gdMiniBatch = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.01, batchSize=20)
-    gdFullBatch = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.01, batchSize=len(xTrain))
+    gdStochastic = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.001, batchSize=1)
+    gdMiniBatch = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.001, batchSize=50)
+    gdFullBatch = computeGradientDescentV1(xTrain, yTrain, xTest, yTest, 0.001, batchSize=len(xTrain))
     
     # Closed form solution
     xMatrix = createFeatureMatrixForErrorSurface(xTrain, degree=1)
@@ -51,7 +51,8 @@ def main():
         "Bias": [bias, gdStochastic[2][-1], gdMiniBatch[2][-1], gdFullBatch[2][-1]],
         "Variance": [variance, gdStochastic[3][-1], gdMiniBatch[3][-1], gdFullBatch[3][-1]],
         "Steps": ["-", gdStochastic[5][-1], gdMiniBatch[5][-1], gdFullBatch[5][-1]],
-        "Eta": ["-", gdStochastic[4], gdMiniBatch[4], gdFullBatch[4]]
+        "Eta": ["-", gdStochastic[4], gdMiniBatch[4], gdFullBatch[4]],
+        "Epochs": ["-", gdStochastic[7], gdMiniBatch[7], gdFullBatch[7]]
     }
     
     df = pd.DataFrame(data)
