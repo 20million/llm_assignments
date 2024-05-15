@@ -75,7 +75,7 @@ def computeGradientDescentV1(xTrain: np.array, yTrain: np.array, xTest: np.array
             beta1 -= eta * gradBeta1
 
             # Calculate bias and variance for the current batch
-            bias.append(computeMSE(xBatch, yBatch, beta0, beta1))
+            bias.append(computeMSE(xTrain, yTrain, beta0, beta1))
             variance.append(computeMSE(xTest, yTest, beta0, beta1))
 
             # Update steps

@@ -74,7 +74,7 @@ def main():
     stepsList = [gdMiniBatch[5]]
     batchSizes = [gdMiniBatch[6]]
     
-    plotEpochsErrorGraph(convergenceEpochs, biasList, varianceList, etaList, stepsList, batchSizes, 'minibatch:20')
+    plotEpochsErrorGraph(convergenceEpochs, biasList, varianceList, etaList, stepsList, batchSizes, 'minibatch')
 
     biasList = [gdFullBatch[2]]
     varianceList = [gdFullBatch[3]]
