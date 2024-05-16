@@ -20,13 +20,22 @@ def calculateClosedFormBeta(x: np.ndarray, y: np.ndarray, degree: int) -> np.nda
 # Plot the data, closed-form solution, and gradient descent solutions
 def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.ndarray, binaryClassifier: np.ndarray) -> None:
     plt.figure(figsize=(10, 6))
-    plt.scatter(xValues, yValues, color='gray', label='Data', alpha=0.6)
+    plt.scatter(xValues, yValues, color='gray', label='Data')
 
     # Plot closed-form solution
-    yClosedForm = closedFormBetas[0] + closedFormBetas[1] * xValues
+    m = closedFormBetas[1]
+    c = closedFormBetas[0]
+    yClosedForm = m * xValues + c
     plt.plot(xValues, yClosedForm, color='red', label='Closed-Form Solution')
-    plt.scatter(xValues, binaryClassifier, color='blue', label='Binary Predictions', alpha=0.6)
-
+   
+    # Plot boundary
+    yPerpendicular = (-1/m) * xValues + c
+    print(f'yPerpendicular={yPerpendicular}')
+    plt.plot(xValues, yPerpendicular, color='black', label='boundary', linestyle='--')
+    plt.scatter(xValues, binaryClassifier, color='blue', label='Binary Predictions')
+    plt.ylim(-2,2)
+    
+    plt.axvline(x=0, color='purple')
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title('closed form')
@@ -36,6 +45,14 @@ def plotSolutions(xValues: np.ndarray, yValues: np.ndarray, closedFormBetas: np.
 # Convert predicted values to binary predictions using a threshold
 def predictBinary(y_pred: np.ndarray, threshold: float = 0.5) -> np.ndarray:
     return (y_pred > threshold).astype(int)
+
+# Function to calculate MCE for a given threshold
+def calculate_mce(y_pred: np.ndarray, y_true: np.ndarray, threshold: float) -> float:
+    binary_predictions = (y_pred > threshold).astype(int)
+    incorrect_predictions = np.abs(binary_predictions - y_true)
+    # mce = np.mean(incorrect_predictions)
+    mce = np.sum(incorrect_predictions)
+    return mce
 
 # Main function
 def main():
@@ -51,6 +68,22 @@ def main():
     print(f"binaryClassifier: ({bClass}).")
 
     plotSolutions(xValues, yValues, closedFormBetas, bClass )
+
+    # Calculate MCE for different thresholds
+    thresholds = np.arange(-2, 7)
+    mce_values = [calculate_mce(yCap, yValues, threshold) for threshold in thresholds]
+    print(f"thresholds: ({thresholds}).")
+    print(f"mce_values: ({mce_values}).")
+
+    # Plot MCE vs. Threshold
+    plt.figure(figsize=(8, 6))
+    plt.plot(thresholds, mce_values, color='blue')
+    plt.xlabel('Threshold')
+    plt.ylabel('Mean Classification Error (MCE)')
+    plt.title('MCE vs. Threshold')
+    plt.grid(True)  
+    plt.show()
+
 
 # Run the main function when the script is executed directly
 if __name__ == "__main__":
