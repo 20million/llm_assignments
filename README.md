@@ -1,110 +1,55 @@
-# LLM Assignments
+# Foundations of Generative AI (From Scratch)
 
-This repository contains a collection of **Python scripts and Jupyter notebooks** exploring core machine-learning and statistical concepts that underpin modern **Generative AI and Large Language Models (LLMs)**.
+This repository contains a "no-nonsense" foundations course on Generative AI. The core philosophy is **mechanical sympathy**: implementing optimization, probability, and neural networks from scratch (using only Numpy) to build deep intuition before using high-level frameworks.
 
-Rather than a single cohesive application, this repo acts as a **learning sandbox**: each file focuses on a specific idea such as optimization, probability distributions, sampling, classification, or neural networks.
+## Course Philosophy
 
----
+*   **No Magic:** We do not use PyTorch, TensorFlow, or Scikit-learn. Everything is implemented explicitly.
+*   **Visual Intuition:** Every concept is accompanied by a visualization to verify understanding.
+*   **One Concept, One File:** Code is modular and focused.
 
-## Repository Structure
+## Directory Structure
 
-The repository is intentionally lightweight and mostly flat.
+### Module 00: Setup
+*   `Utils.py`: Helper functions for deterministic seeding and plotting.
+*   `requirements.txt`: Minimal dependencies (`numpy`, `matplotlib`, `scipy`).
 
-### Python Scripts
+### Module 01: Optimization
+*   `GradientDescent.py`: Basic scalar/vector gradient descent visualization.
+*   `GradientDescentByBatch.py`: Mini-batch gradient descent loop.
+*   `StochasticGradientDescent.py`: SGD visualization showing noisy updates.
+*   `GradientDescentLibrary.py`: A reusable Class encapsulating GD logic.
 
-Each script is largely self-contained and demonstrates a core concept:
+### Module 02: Bias & Variance
+*   `BiasVariancePlotter.py`: Polynomial regression showing underfitting vs overfitting.
+*   `EpsilonPlotter.py`: Visualization of irreducible error.
 
-* **Optimization & Learning**
+### Module 03: Probability
+*   `NormalDistribution.py`: Gaussian PDF implemented from scratch.
+*   `CDF.py`: Numerical integration of PDF to compute CDF.
+*   `ClosedFormBeta.py`: Beta distribution PDF using Gamma function.
+*   `RandomSampler.py`: Rejection sampling to generate samples from arbitrary distributions.
 
-  * `GradientDescent.py`
-  * `StochasticGradientDescent.py`
-  * `GradientDescentByBatch.py`
-  * `GradientDescentLibrary.py`
+### Module 04: Classification
+*   `BinaryClassifier.py`: Logistic regression with explicit cross-entropy loss and gradient. Classification boundary visualization.
 
-* **Classification & Models**
+### Module 05: Sequences
+*   `StringDiffWithLCS.py`: Longest Common Subsequence using Dynamic Programming (table visualization).
 
-  * `BinaryClassifier.py`
-  * `cnn.py` — example convolutional neural network experiment
+### Module 06: Neural Networks
+*   `cnn.py`: Numpy-only 2D Convolution, ReLU, and Max Pooling forward pass.
 
-* **Statistics & Probability**
+## Usage
 
-  * `NormalDistribution.py`
-  * `CDF.py`
-  * `ClosedFormBeta.py`
-  * `RandomSampler.py`
-
-* **Analysis & Visualization**
-
-  * `BiasVariancePlotter.py`
-  * `EpsilonPlotter.py`
-
-* **Algorithms & Utilities**
-
-  * `StringDiffWithLCS.py` — string comparison using Longest Common Subsequence
-  * `Utils.py` — shared helper functions
-
-### Notebooks
-
-* `jupyter/`
-  Interactive Jupyter notebooks used to experiment with and visualize concepts implemented in the scripts.
-
-### Dependencies
-
-* `requirements.txt`
-  Python dependencies required to run the scripts and notebooks.
-
----
-
-## Getting Started
-
-### 1. Clone the repository
+Each script is standalone. Run them from the root directory:
 
 ```bash
-git clone https://github.com/20million/llm_assignments.git
-cd llm_assignments
+python module_01_optimization/GradientDescent.py
+python module_06_neural_networks/cnn.py
 ```
 
-### 2. Install dependencies
+## Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r module_00_setup/requirements.txt
 ```
-
-### 3. Run notebooks
-
-```bash
-jupyter notebook
-```
-
-You can also run individual Python scripts directly:
-
-```bash
-python GradientDescent.py
-```
-
----
-
-## How to Use This Repo
-
-This repository is best treated as a **concept library**, not a production codebase.
-
-* Use the **gradient descent implementations** to understand optimization behavior.
-* Use the **probability and sampling scripts** to build intuition for distributions and randomness.
-* Use the **classifier and CNN examples** as stepping stones toward more complex models.
-* Use the **visualization tools** to see how learning dynamics behave rather than just reading equations.
-
-These fundamentals are essential groundwork before working with large neural networks and transformer-based models.
-
----
-
-## Intended Audience
-
-* Students learning machine learning or generative AI fundamentals
-* Engineers refreshing core ML concepts
-* Anyone who wants executable, minimal examples instead of heavy frameworks
-
----
-
-## License
-
-MIT License. See the `LICENSE` file for details.
