@@ -6,6 +6,18 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from module_00_setup.Utils import set_seed, setup_plot
 
+"""
+Concepts:
+- Sequences (Order matters)
+- Recurrence Relations (Dynamic Programming)
+- Context
+
+This file handles "Sequences".
+- Unlike the "Bag of Words" (Features) in simple classifiers, here the ORDER determines the meaning.
+- The "Grid" we build compares every part of Sequence A with Sequence B.
+- This "All-vs-All" comparison is the conceptual ancestor of the "Attention Mechanism" in Transformers.
+"""
+
 def longest_common_subsequence(text1, text2):
     """
     Computes LCS using Dynamic Programming.

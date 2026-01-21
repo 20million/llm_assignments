@@ -6,6 +6,20 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from module_00_setup.Utils import set_seed, setup_plot
 
+"""
+Concepts:
+- Logistic Regression (Classification)
+- Parameters (Weights & Bias)
+- Activation Function (Sigmoid)
+- Decision Boundary
+
+This file implements a classifier.
+- "Weights": Determine the angle of the line.
+- "Bias (Offset)": Shifts the line from the origin.
+- "Activation": Squashes the number into a probability (0 to 1).
+LLMs use this exact "Dot Product + Bias -> Activation" logic in every single neuron.
+"""
+
 def sigmoid(z):
     return 1.0 / (1.0 + np.exp(-z))
 
@@ -22,7 +36,10 @@ def train_logistic_regression(X, y, learning_rate=0.1, iterations=1000):
     
     for i in range(iterations):
         # Forward
+        # Z = Dot Product(Features, Weights) + (Bias is implicitly in X column 0)
         z = np.dot(X, weights)
+        
+        # ACTIVATION: Squash z into probability [0, 1]
         h = sigmoid(z)
         
         # Loss
@@ -55,7 +72,11 @@ if __name__ == "__main__":
     X_raw = np.vstack((x0, x1))
     y = np.concatenate((y0, y1))
     
-    # Add bias
+    y = np.concatenate((y0, y1))
+    
+    # Add bias (Offset term)
+    # This '1' column corresponds to w0 (the Bias/Intercept parameter).
+    # It allows the decision line to not pass through (0,0).
     X = np.c_[np.ones((n_samples, 1)), X_raw]
     
     # Train

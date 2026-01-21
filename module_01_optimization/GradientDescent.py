@@ -7,6 +7,19 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from module_00_setup.Utils import set_seed, setup_plot
 
+"""
+Concepts:
+- Gradient Descent (Optimization)
+- Loss Minimization
+- Learning Rate
+
+This file implements the core mechanism of "Learning".
+We have a "Loss Function" (the curve), and we want to find the bottom.
+The "x" value here represents a MODEL PARAMETER (Weight).
+By updating "x" using the Gradient, we are "Training the Model".
+This is exactly how LLMs tune their billions of parameters.
+"""
+
 def gradient_descent_1d(learning_rate=0.1, iterations=50):
     """
     Minimizes f(x) = x^2 using gradient descent.

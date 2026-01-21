@@ -33,6 +33,47 @@ Follow these modules in order. Each one teaches you **one secret** about LLMs.
 6.  **[Module 05: Sequences](./module_05_sequences/)** — **Words & Order.** How we compare spellings and sentences.
 7.  **[Module 06: Neural Networks](./module_06_neural_networks/)** — **The Brain.** How layers of filters help the computer "see" patterns.
 
+## 📖 [Dictionary of Terms](./GLOSSARY.md)
+Confused by "Weights", "Features", or "Bias"? **[Click here for the Glossary](./GLOSSARY.md)**.
+
+## 📘 Concept Index: Where Core ML Terms Appear
+
+*   **Linear Regression**
+    *   Appears in: `module_01_optimization` (Gradient Descent), `module_02_bias_variance` (Polynomial Fitting)
+    *   Implemented as: Minimizing squared error via gradient descent.
+
+*   **Logistic Regression**
+    *   Appears in: `module_04_classification/BinaryClassifier.py`
+    *   Implemented as: Separating data with a sigmoid decision boundary.
+
+*   **Features**
+    *   Appears in: `module_02_bias_variance/BiasVariancePlotter.py`
+    *   Implemented as: The input vectors ($x$, $x^2$, $x^3$...) used to train the model.
+
+*   **Parameters / Weights**
+    *   Appears in: `module_01_optimization`, `module_04_classification`
+    *   Implemented as: The variables (theta, w) that the model updates during training.
+
+*   **Bias (Offset Term)**
+    *   Appears in: `module_04_classification/BinaryClassifier.py`, `module_06_neural_networks/cnn.py`
+    *   Implemented as: The extra "intercept" term added to the weighted sum. (Distinguish from "Statistical Bias" below).
+
+*   **Statistical Bias**
+    *   Appears in: `module_02_bias_variance/BiasVariancePlotter.py`
+    *   Implemented as: The error introduced by approximating a complex problem with a too-simple model.
+
+*   **Activations**
+    *   Appears in: `module_04_classification/BinaryClassifier.py` (Sigmoid), `module_06_neural_networks/cnn.py` (ReLU)
+    *   Implemented as: Functions that squash or filter the output of a neuron.
+
+*   **Network Architecture**
+    *   Appears in: `module_06_neural_networks/cnn.py`
+    *   Implemented as: The explicit arrangement of layers (Convolution -> ReLU -> Pooling).
+
+*   **Sequences**
+    *   Appears in: `module_05_sequences/StringDiffWithLCS.py`
+    *   Implemented as: Comparing strings character-by-character using Dynamic Programming.
+
 ## How to Run
 
 1.  Open your terminal/command prompt.

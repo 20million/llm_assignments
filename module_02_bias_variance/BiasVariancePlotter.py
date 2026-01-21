@@ -6,6 +6,19 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from module_00_setup.Utils import set_seed, setup_plot
 
+"""
+Concepts:
+- Overfitting (High Variance) vs Underfitting (High Statistical Bias)
+- Features (Polynomial expansion)
+- Generalization
+
+This file shows why we can't just "memorize" data.
+- "Statistical Bias": The model is too simple (Straight line).
+- "Variance": The model is too sensitive (Wiggly line).
+- "Features": We create new inputs (x^2, x^3) from the original x to help the model learn curves.
+LLMs need to find the balance: understanding patterns without memorizing the training data.
+"""
+
 def generate_polynomial_data(n=20, noise=1.0):
     """
     True function: y = 0.5 * x^2 + x + 2 + noise
@@ -22,7 +35,10 @@ def fit_polynomial(x, y, degree):
     Hypothesis h(x) = w0 + w1*x + w2*x^2 + ...
     """
     # Create feature matrix
-    X_poly = np.column_stack([x**i for i in range(degree + 1)]) # includes bias x^0
+    # FEATURES: We are expanding the single input 'x' into multiple features [1, x, x^2, ... x^degree]
+    # This allows a linear model (weighted sum) to fit curved data.
+    # LLMs accept "tokens" as features and learn complex relationships between them.
+    X_poly = np.column_stack([x**i for i in range(degree + 1)]) # includes bias x^0 (Intercept term)
     
     # Normal Equation (Closed Form) for stability in this demo instead of GD tuning
     # w = (X.T X)^-1 X.T y

@@ -6,6 +6,20 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from module_00_setup.Utils import set_seed, setup_plot
 
+"""
+Concepts:
+- Neural Network Architecture (Layers)
+- Convolution (Feature Extraction)
+- Activation (ReLU - Non-linearity)
+- Pooling (Summarization)
+
+This file demonstrates a single "Forward Pass" of a deep network layer.
+- "Convolution": Finds patterns (features) like edges.
+- "ReLU": Removes noise (negative values). This is an ACTIVATION function.
+- "Pooling": Summarizes the result.
+Deep Learning is just stacking these blocks on top of each other.
+"""
+
 def convolve2d(image, kernel, stride=1, padding=0):
     """
     Performs 2D convolution via sliding window.
@@ -34,6 +48,9 @@ def convolve2d(image, kernel, stride=1, padding=0):
     return output
 
 def relu(x):
+    # ACTIVATION: Rectified Linear Unit.
+    # It introduces "non-linearity", allowing the network to learn complex shapes.
+    # Without this, the network would just be one big Linear Regression.
     return np.maximum(0, x)
 
 def max_pooling(feature_map, size=2, stride=2):
