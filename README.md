@@ -1,40 +1,110 @@
 # LLM Assignments
 
-This repository contains assignments completed for the course "Fundamentals of Generative AI".
+This repository contains a collection of **Python scripts and Jupyter notebooks** exploring core machine-learning and statistical concepts that underpin modern **Generative AI and Large Language Models (LLMs)**.
 
-## Course Description
+Rather than a single cohesive application, this repo acts as a **learning sandbox**: each file focuses on a specific idea such as optimization, probability distributions, sampling, classification, or neural networks.
 
-"Fundamentals of Generative AI" is a course that explores various natural language processing (NLP) techniques and machine learning models for understanding and generating text. 
-The course covers topics such as neural language models, sequence-to-sequence models, attention mechanisms, and transformer architectures.
+---
 
-## Assignments
-This repository is organized into separate folders for each assignment. Each assignment folder contains the following:
+## Repository Structure
 
-1. **Assignment Description:** A README or PDF file describing the requirements and objectives of the assignment.
-2. **Solution Code:** Python scripts or Jupyter notebooks containing the code implementation for the assignment tasks.
-3. **Datasets:** Any datasets required for completing the assignment tasks.
-4. **Results:** Optionally, folders or files containing the results, such as trained models, evaluation metrics, or generated outputs.
+The repository is intentionally lightweight and mostly flat.
+
+### Python Scripts
+
+Each script is largely self-contained and demonstrates a core concept:
+
+* **Optimization & Learning**
+
+  * `GradientDescent.py`
+  * `StochasticGradientDescent.py`
+  * `GradientDescentByBatch.py`
+  * `GradientDescentLibrary.py`
+
+* **Classification & Models**
+
+  * `BinaryClassifier.py`
+  * `cnn.py` — example convolutional neural network experiment
+
+* **Statistics & Probability**
+
+  * `NormalDistribution.py`
+  * `CDF.py`
+  * `ClosedFormBeta.py`
+  * `RandomSampler.py`
+
+* **Analysis & Visualization**
+
+  * `BiasVariancePlotter.py`
+  * `EpsilonPlotter.py`
+
+* **Algorithms & Utilities**
+
+  * `StringDiffWithLCS.py` — string comparison using Longest Common Subsequence
+  * `Utils.py` — shared helper functions
+
+### Notebooks
+
+* `jupyter/`
+  Interactive Jupyter notebooks used to experiment with and visualize concepts implemented in the scripts.
+
+### Dependencies
+
+* `requirements.txt`
+  Python dependencies required to run the scripts and notebooks.
+
+---
 
 ## Getting Started
-To get started with the assignments, follow these steps:
 
-1. Clone this repository to your local machine:
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/20million/llm_assignments.git
+cd llm_assignments
 ```
 
-2. Navigate to the specific assignment folder you are interested in.
+### 2. Install dependencies
 
-3. Read the assignment description file to understand the requirements.
+```bash
+pip install -r requirements.txt
+```
 
-4. Use the provided solution code and datasets to complete the assignment tasks.
+### 3. Run notebooks
 
-## Contributing
-Contributions to this repository are welcome. If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
+```bash
+jupyter notebook
+```
+
+You can also run individual Python scripts directly:
+
+```bash
+python GradientDescent.py
+```
+
+---
+
+## How to Use This Repo
+
+This repository is best treated as a **concept library**, not a production codebase.
+
+* Use the **gradient descent implementations** to understand optimization behavior.
+* Use the **probability and sampling scripts** to build intuition for distributions and randomness.
+* Use the **classifier and CNN examples** as stepping stones toward more complex models.
+* Use the **visualization tools** to see how learning dynamics behave rather than just reading equations.
+
+These fundamentals are essential groundwork before working with large neural networks and transformer-based models.
+
+---
+
+## Intended Audience
+
+* Students learning machine learning or generative AI fundamentals
+* Engineers refreshing core ML concepts
+* Anyone who wants executable, minimal examples instead of heavy frameworks
+
+---
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
-Special thanks to the course instructor https://www.linkedin.com/in/sudarsun/ for mentoring and providing the assignments and resources for learning the fundamentals of Generative AI.
+MIT License. See the `LICENSE` file for details.
